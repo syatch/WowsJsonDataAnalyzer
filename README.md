@@ -19,8 +19,10 @@ if you haven't installed Matplotlib, you have to install it.
 　　　　python3 python3 get_DD_stats.py
 
 Output files created under ./output
-You can get sorted tables and histograms
+You can get sorted tables and histograms.
+
 ![Table image](image/table_all_range.png)
+
 ![Histogram image](image/hist_all_range.png)
 
 ## Structure of data/target.json
