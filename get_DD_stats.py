@@ -1,11 +1,6 @@
 import json
 from get_sort import *
-
-import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
-
-data_path = 'data/Destroyer.json'
+from save_output import *
 
 def read_json() :
     with open(data_path) as jsdata:
@@ -67,86 +62,61 @@ def write_json(write_data) :
     with open('output/DD_data.json', 'w') as write_file:
         json.dump(write_data, write_file, indent = 4)
 
-def save_table(labels, data, save_path) :
-    matplotlib.rc('font', family='Noto Sans CJK JP')
-
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-
-    # Draw table
-    the_table = plt.table(cellText = data,
-                        colWidths = [0.1] * len(labels),
-                        colLabels = labels,
-                        loc = 'center')
-    the_table.auto_set_font_size(False)
-    the_table.set_fontsize(24)
-    the_table.scale(10, 5)
-
-    # Removing ticks and spines enables you to get the figure only with table
-    plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
-    plt.tick_params(axis='y', which='both', right=False, left=False, labelleft=False)
-    for pos in ['right','top','bottom','left']:
-        plt.gca().spines[pos].set_visible(False)
-
-    plt.savefig('output/' + save_path, bbox_inches='tight', pad_inches=0.05)
 
 if __name__ == "__main__" :
+    data_path = 'data/Destroyer.json'
     data = read_json()
     sort_tool = SortTool(data)
+    save_tool = SaveTool()
     # check_data(data)
-    Tier = [9]
+    Tier = [8, 9]
     for T in Tier :
-        bottom_T = max(T - 2, 1)
-        top_T = min(T + 2, 10)
+        print("Tier : " + str(T))
+        for T_range in [[0, 2, "bottom_range"], [2, 2, "all_range"], [2, 0, "top_range"]] :
+            print("range : " + T_range[2])
 
-        data = sort_tool.get_detect_sort(bottom_T, top_T)
-        labels = ['艦名', '最良海面発見距離(標準)\n[km]']
-        save_path = str(T) + '/detect_distance/data'
-        save_table(labels, data, save_path)
+            bottom_T = max(T - T_range[0], 1)
+            top_T = min(T + T_range[1], 10)
 
-        data = sort_tool.get_HP_sort(bottom_T, top_T)
-        labels = ['艦名', '最大体力(標準)\n[points]']
-        save_path = str(T) + '/HP/data'
-        save_table(labels, data, save_path)
+            print(" - detect")
+            data = sort_tool.get_detect_sort(bottom_T, top_T)
+            save_tool.save_detect(data, T, T_range[2])
 
-        data = sort_tool.get_fusillade_damage_sort(bottom_T, top_T)
-        labels = ['艦名', '斉射火力\n[damage/shot]', '単発火力\n[damage/shell]', '門数\n[guns]']
-        save_path = str(T) + '/fusillade_damage/data'
-        save_table(labels, data, save_path)
+            print(" - HP")
+            data = sort_tool.get_HP_sort(bottom_T, top_T)
+            save_tool.save_health(data, T, T_range[2])
 
-        data = sort_tool.get_DPS_sort(bottom_T, top_T)
-        labels = ['艦名', '1秒あたりの貫通ダメージ\n[damage/s]', '斉射火力\n[damage/shot]', '1秒あたり射撃回数\n[times/s]']
-        save_path = str(T) + '/DPS/data'
-        save_table(labels, data, save_path)
+            print(" - fusillade_damage")
+            data = sort_tool.get_fusillade_damage_sort(bottom_T, top_T)
+            save_tool.save_fusillade_damage(data, T, T_range[2])
 
-        data = sort_tool.get_fusillade_burn_probability_sort(bottom_T, top_T)
-        labels = ['艦名', '斉射あたり火災発生率\n[%/shot]', '単発火災発生率\n[%/shell]', '門数\n[guns]']
-        save_path = str(T) + '/fusillade_burn_probability/data'
-        save_table(labels, data, save_path)
+            print(" - DPS")
+            data = sort_tool.get_DPS_sort(bottom_T, top_T)
+            save_tool.save_DPS(data, T, T_range[2])
 
-        data = sort_tool.get_burn_probability_per_s_sort(bottom_T, top_T)
-        labels = ['艦名', '1秒あたり火災発生率 [%/s]', '単発火災発生率\n[%/shell]', '門数\n[guns]', '1秒あたり射撃回数\n[times/s]']
-        save_path = str(T) + '/burn_probability_per_s/data'
-        save_table(labels, data, save_path)
+            print(" - fusillade_burn_probability")
+            data = sort_tool.get_fusillade_burn_probability_sort(bottom_T, top_T)
+            save_tool.save_fusillade_burn(data, T, T_range[2])
 
-        data = sort_tool.get_bullet_speed_sort(bottom_T, top_T)
-        labels = ['艦名', '砲弾初速 [m/s]']
-        save_path = str(T) + '/bullet_speed/data'
-        save_table(labels, data, save_path)
+            print(" - burn_probability_per_s")
+            data = sort_tool.get_burn_probability_per_s_sort(bottom_T, top_T)
+            save_tool.save_burn_probability(data, T, T_range[2])
 
-        data = sort_tool.get_artillery_rotation_sort(bottom_T, top_T)
-        labels = ['艦名', '主砲旋回時間 []']
-        save_path = str(T) + '/artillery_rotation/data'
-        save_table(labels, data, save_path)
+            print(" - bullet_speed")
+            data = sort_tool.get_bullet_speed_sort(bottom_T, top_T)
+            save_tool.save_bullet_speed(data, T, T_range[2])
 
-        data = sort_tool.get_max_speed_sort(bottom_T, top_T)
-        labels = ['艦名', '最大速力 [kt]']
-        save_path = str(T) + '/max_speed/data'
-        save_table(labels, data, save_path)
+            print(" - artillery_rotation")
+            data = sort_tool.get_artillery_rotation_sort(bottom_T, top_T)
+            save_tool.save_rotation(data, T, T_range[2])
 
-        data = sort_tool.get_rudder_sort(bottom_T, top_T)
-        labels = ['艦名', '転舵所要時間 [s]']
-        save_path = str(T) + '/rudder/data'
-        save_table(labels, data, save_path)
+            print(" - max_speed")
+            data = sort_tool.get_max_speed_sort(bottom_T, top_T)
+            save_tool.save_max_speed(data, T, T_range[2])
+
+            print(" - rudder")
+            data = sort_tool.get_rudder_sort(bottom_T, top_T)
+            save_tool.save_rudder(data, T, T_range[2])
+            print(" - end")
 
     write_json(sort_tool.get_dic())

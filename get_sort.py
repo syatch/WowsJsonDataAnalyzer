@@ -140,10 +140,15 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "   "
             concealment = ship['default_profile']['concealment']
             best_detect_distance = concealment['best_detect_distance_by_ship']
             detect_distance = concealment['detect_distance_by_ship']
-            data.append([ship['name'], str(best_detect_distance) + "(" + str(detect_distance) + ")"])
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(best_detect_distance) + "(" + str(detect_distance) + ")"])
         return data
 
     def get_HP_sort(self, bottom_T, upper_T) :
@@ -154,8 +159,13 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = "   "
+            else :
+                brank = "    "
             hull = ship['default_profile']['hull']
-            data.append([ship['name'], str(hull['best_health']) + "(" + str(hull['health']) + ")"])
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(hull['best_health']) + "(" + str(hull['health']) + ")"])
         return data
 
     def get_fusillade_damage_sort(self, bottom_T, upper_T) :
@@ -166,11 +176,16 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
             artillery = ship['default_profile']['artillery']
             fusillade_damage = artillery['fusillade_damage']
             shell_damage = artillery['shell_damage']
             sum_guns = artillery['sum_guns']
-            data.append([ship['name'], str(fusillade_damage), str(shell_damage), str(sum_guns)])
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(fusillade_damage), str(shell_damage), str(sum_guns)])
         return data
 
     def get_DPS_sort(self, bottom_T, upper_T) :
@@ -181,11 +196,16 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
             artillery = ship['default_profile']['artillery']
             damage_per_s = artillery['damage_per_s']
             fusillade_damage = artillery['fusillade_damage']
             shoot_per_s = artillery['shoot_per_s']
-            data.append([ship['name'], str(damage_per_s), str(fusillade_damage), str(shoot_per_s)])
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(damage_per_s), str(fusillade_damage), str(shoot_per_s)])
         return data
 
     def get_fusillade_burn_probability_sort(self, bottom_T, upper_T) :
@@ -196,11 +216,16 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
             artillery = ship['default_profile']['artillery']
             fusillade_burn_probability = artillery['fusillade_burn_probability']
             burn_probability = artillery['shell_burn_probability']
             sum_guns = artillery['sum_guns']
-            data.append([ship['name'], str(fusillade_burn_probability), str(burn_probability), str(sum_guns)])
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(fusillade_burn_probability), str(burn_probability), str(sum_guns)])
         return data
 
     def get_burn_probability_per_s_sort(self, bottom_T, upper_T) :
@@ -211,12 +236,17 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
             artillery = ship['default_profile']['artillery']
             burn_probability_per_s = artillery['burn_probability_per_s']
             burn_probability = artillery['shell_burn_probability']
             sum_guns = artillery['sum_guns']
             shoot_per_s = artillery['shoot_per_s']
-            data.append([ship['name'], str(burn_probability_per_s), str(burn_probability), str(sum_guns), str(shoot_per_s)])
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(burn_probability_per_s), str(burn_probability), str(sum_guns), str(shoot_per_s)])
         return data
 
     def get_bullet_speed_sort(self, bottom_T, upper_T) :
@@ -227,7 +257,12 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            data.append([ship['name'], str(ship['default_profile']['artillery']['shell_bullet_speed'])])
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['artillery']['shell_bullet_speed'])])
         return data
 
     def get_artillery_rotation_sort(self, bottom_T, upper_T) :
@@ -238,7 +273,12 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            data.append([ship['name'], str(ship['default_profile']['artillery']['rotation_time'])])
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['artillery']['rotation_time'])])
         return data
 
     def get_max_speed_sort(self, bottom_T, upper_T) :
@@ -249,7 +289,12 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            data.append([ship['name'], str(ship['default_profile']['mobility']['max_speed'])])
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['mobility']['max_speed'])])
         return data
 
     def get_rudder_sort(self, bottom_T, upper_T) :
@@ -260,5 +305,10 @@ class SortTool:
         data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            data.append([ship['name'], str(ship['default_profile']['mobility']['rudder_time'])])
+            brank = ""
+            if ship['tier'] == 10 :
+                brank = " "
+            else :
+                brank = "  "
+            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['mobility']['rudder_time'])])
         return data
