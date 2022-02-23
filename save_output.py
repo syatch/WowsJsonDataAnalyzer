@@ -1,3 +1,4 @@
+import os
 import matplotlib
 import matplotlib.pyplot as plt
 import colorsys
@@ -79,7 +80,7 @@ class SaveTool:
         for pos in ['right','top','bottom','left']:
             plt.gca().spines[pos].set_visible(False)
 
-        plt.savefig('output/' + save_path, bbox_inches='tight', pad_inches=0.05)
+        plt.savefig(save_path, bbox_inches='tight', pad_inches=0.05)
         plt.close()
 
     def __get_hist_class(self, data) :
@@ -132,7 +133,7 @@ class SaveTool:
                             break
                     break
 
-        plt.savefig('output/' + save_path, facecolor="azure", edgecolor="k", bbox_inches = 'tight', pad_inches = 0.05)
+        plt.savefig(save_path, facecolor="azure", edgecolor="k", bbox_inches = 'tight', pad_inches = 0.05)
         plt.close()
 
     def save_table(self, data, T, id_list, data_type, ship_name = "") :
@@ -143,8 +144,12 @@ class SaveTool:
                 ship_type = "/" + ship_name
             else :
                 ship_type = "/none"
-            save_path = str(T) + ship_type + SaveDirectory.directory[data_type] + 'table_' + str(id)
-            self.__save_table(labels, data[index], save_path, ship_name)
+
+            save_path = 'output/' + str(T) + ship_type + SaveDirectory.directory[data_type]
+            os.makedirs(save_path, exist_ok = True)
+            file_name = '/table_' + str(id)
+
+            self.__save_table(labels, data[index], save_path + file_name, ship_name)
             index += 1
 
     def save_hist(self, data, T, id_list, data_type, ship_name = "") :
@@ -155,6 +160,10 @@ class SaveTool:
                 ship_type = "/" + ship_name
             else :
                 ship_type = "/none"
-            save_path = str(T) + ship_type + SaveDirectory.directory[data_type] + 'hist_' + str(id)
-            self.__save_hist(labels, data[index], save_path, ship_name)
+
+            save_path = 'output/' + str(T) + ship_type + SaveDirectory.directory[data_type]
+            os.makedirs(save_path, exist_ok = True)
+            file_name = '/hist_' + str(id)
+
+            self.__save_hist(labels, data[index], save_path + file_name, ship_name)
             index += 1

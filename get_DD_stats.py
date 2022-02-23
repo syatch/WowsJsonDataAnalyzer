@@ -1,4 +1,5 @@
 import json
+import time
 from get_sort import *
 from save_output import *
 from base_data import *
@@ -65,9 +66,9 @@ def write_json(write_data) :
 
 
 if __name__ == "__main__" :
-    import time
     start_time = time.process_time()
 
+    T_range = 2
     data_path = 'data/Destroyer.json'
     target_path = 'data/target.json'
 
@@ -80,7 +81,6 @@ if __name__ == "__main__" :
         print("Tier : " + str(target[0]) + "  Ship : " + target[1])
         id = ["bottom_range", "all_range", "top_range"]
         T = target[0]
-        T_range = 2
 
         for data_type in DataType :
             print(" - " + str(data_type.name))

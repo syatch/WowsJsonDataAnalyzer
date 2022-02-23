@@ -42,16 +42,16 @@ class HistLabel :
 
 class SaveDirectory :
     directory = [
-        '/detect_distance/',
-        '/HP/',
-        '/fusillade_damage/',
-        '/DPS/',
-        '/fusillade_burn_probability/',
-        '/burn_probability_per_s/',
-        '/bullet_speed/',
-        '/artillery_rotation/',
-        '/max_speed/',
-        '/rudder/',
+        '/detect_distance',
+        '/HP',
+        '/fusillade_damage',
+        '/DPS',
+        '/fusillade_burn_probability',
+        '/burn_probability_per_s',
+        '/bullet_speed',
+        '/artillery_rotation',
+        '/max_speed',
+        '/rudder',
     ]
 
 def my_round(value, digit = 0) :
