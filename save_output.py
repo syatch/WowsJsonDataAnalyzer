@@ -1,6 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import colorsys
+from statistics import mean
 from base_data import *
 
 class SaveTool:
@@ -103,16 +104,21 @@ class SaveTool:
 
         n, bins, patches = plt.hist(data_value, bins = class_freq, color = 'deepskyblue', edgecolor = 'k', fill = True)
 
+        plt.axvline(mean(data_value), color = 'red', linestyle = 'dashed', linewidth = 2)
+        plt.xlabel(labels[0])
+        plt.ylabel(labels[1])
+
         data_width = list()
         for i in range(self.__class_num) :
             data_width.append([str(class_freq[i]) + " - " + str(class_freq[i + 1]), int(n[i])])
 
-        plt.table(cellText = data_width,
-                colColours = (["gainsboro"]) * len(labels),
-                colLabels = labels,
-                colWidths = [0.15,0.1],
-                loc = 'right'
-                )
+        the_table = plt.table(cellText = data_width,
+                    colColours = (["gainsboro"]) * len(labels),
+                    colLabels = labels,
+                    colWidths = [0.15, 0.1],
+                    loc = 'right'
+                    )
+        the_table.scale(1.5, 2.3)
 
 
         if ship_name :

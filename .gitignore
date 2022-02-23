@@ -1,3 +1,4 @@
 data/*
+!data/target.json
 *.pyc
 *.png

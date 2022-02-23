@@ -3,8 +3,8 @@ from get_sort import *
 from save_output import *
 from base_data import *
 
-def read_json() :
-    with open(data_path) as jsdata:
+def read_json(path) :
+    with open(path) as jsdata:
         data = json.load(jsdata)
     return data
 
@@ -69,25 +69,28 @@ if __name__ == "__main__" :
     start_time = time.process_time()
 
     data_path = 'data/Destroyer.json'
-    data = read_json()
+    target_path = 'data/target.json'
+
+    data = read_json(data_path)
     sort_tool = SortTool(data)
     save_tool = SaveTool()
     # check_data(data)
-    search = [[8, "HSF 晴風"], [9, "北風"]]
+    search = read_json(target_path)
+    # search = [[8, "HSF 晴風"], [9, "北風"]]
     for target in search :
-        print("Tier : " + str(target[0]))
+        print("Tier : " + target)
         id = ["bottom_range", "all_range", "top_range"]
-        T = target[0]
+        T = int(target)
         T_range = 2
 
         for data_type in DataType :
             print(" - " + str(data_type.name))
             data = sort_tool.get_sort_data[data_type](T, T_range)
-            save_tool.save_table(data, T, id, data_type, target[1])
-            save_tool.save_hist(data, T, id, data_type, target[1])
+            save_tool.save_table(data, T, id, data_type, search[target])
+            save_tool.save_hist(data, T, id, data_type, search[target])
 
     write_json(sort_tool.get_dic())
 
     end_time = time.process_time()
     elapsed_time = end_time - start_time
-    print(elapsed_time)
+    print("Elapsed Time :" + str(elapsed_time))
