@@ -27,52 +27,82 @@ class SaveTool:
         plt.savefig('output/' + save_path, bbox_inches='tight', pad_inches=0.05)
         plt.close()
 
-    def save_detect(self, data, T, id) :
-        labels = ['艦名(Tier)', '最良海面発見距離(標準)\n[km]']
-        save_path = str(T) + '/detect_distance/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_detect(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '最良海面発見距離(標準)\n[km]']
+            save_path = str(T) + '/detect_distance/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_health(self, data, T, id) :
-        labels = ['艦名(Tier)', '最大体力(標準)\n[points]']
-        save_path = str(T) + '/HP/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_health(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '最大体力(標準)\n[points]']
+            save_path = str(T) + '/HP/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_fusillade_damage(self, data, T, id) :
-        labels = ['艦名(Tier)', '斉射火力\n[damage/shot]', '単発火力\n[damage/shell]', '門数\n[guns]']
-        save_path = str(T) + '/fusillade_damage/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_fusillade_damage(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '斉射火力\n[damage/shot]', '単発火力\n[damage/shell]', '門数\n[guns]']
+            save_path = str(T) + '/fusillade_damage/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_DPS(self, data, T, id) :
-        labels = ['艦名(Tier)', '1秒あたりの貫通ダメージ\n[damage/s]', '斉射火力\n[damage/shot]', '1秒あたり射撃回数\n[times/s]']
-        save_path = str(T) + '/DPS/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_DPS(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '1秒あたりの貫通ダメージ\n[damage/s]', '斉射火力\n[damage/shot]', '1秒あたり射撃回数\n[times/s]']
+            save_path = str(T) + '/DPS/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_fusillade_burn(self, data, T, id) :
-        labels = ['艦名(Tier)', '斉射あたり火災発生率\n[%/shot]', '単発火災発生率\n[%/shell]', '門数\n[guns]']
-        save_path = str(T) + '/fusillade_burn_probability/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_fusillade_burn(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '斉射あたり火災発生率\n[%/shot]', '単発火災発生率\n[%/shell]', '門数\n[guns]']
+            save_path = str(T) + '/fusillade_burn_probability/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_burn_probability(self, data, T, id) :
-        labels = ['艦名(Tier)', '1秒あたり火災発生率 [%/s]', '単発火災発生率\n[%/shell]', '門数\n[guns]', '1秒あたり射撃回数\n[times/s]']
-        save_path = str(T) + '/burn_probability_per_s/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_burn_probability(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '1秒あたり火災発生率 [%/s]', '単発火災発生率\n[%/shell]', '門数\n[guns]', '1秒あたり射撃回数\n[times/s]']
+            save_path = str(T) + '/burn_probability_per_s/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_bullet_speed(self, data, T, id) :
-        labels = ['艦名(Tier)', '砲弾初速 [m/s]']
-        save_path = str(T) + '/bullet_speed/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_bullet_speed(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '砲弾初速 [m/s]']
+            save_path = str(T) + '/bullet_speed/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_rotation(self, data, T, id) :
-        labels = ['艦名(Tier)', '主砲旋回時間 []']
-        save_path = str(T) + '/artillery_rotation/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_rotation(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '主砲旋回時間 []']
+            save_path = str(T) + '/artillery_rotation/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_max_speed(self, data, T, id) :
-        labels = ['艦名(Tier)', '最大速力 [kt]']
-        save_path = str(T) + '/max_speed/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_max_speed(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '最大速力 [kt]']
+            save_path = str(T) + '/max_speed/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1
 
-    def save_rudder(self, data, T, id) :
-        labels = ['艦名(Tier)', '転舵所要時間 [s]']
-        save_path = str(T) + '/rudder/data_' + str(id)
-        self.save_table(labels, data, save_path)
+    def save_rudder(self, data, T, id_list) :
+        index = 0
+        for id in id_list :
+            labels = ['艦名(Tier)', '転舵所要時間 [s]']
+            save_path = str(T) + '/rudder/data_' + str(id)
+            self.save_table(labels, data[index], save_path)
+            index += 1

@@ -117,198 +117,242 @@ class SortTool:
             no_fire_chance_per_s = (1 - one_hit_fire_chance) ** (shoot_per_s * sum_guns)
             ship_dic['default_profile']['artillery']['burn_probability_per_s'] = self.__my_round((1 - no_fire_chance_per_s) * 100, 2)
 
-    def get_target_tier_ships(self, bottom_T, upper_T) :
+    def get_target_tier_ships(self, T, T_range) :
+        bottom_T = max(T - T_range, 1)
+        top_T = min(T + T_range, 10)
+
         ships = self.data['data']
         # mask from T
-        target_ship_dic = dict()
+        target_ship_dic = list()
+        bottom_dic = dict()
+        match_dic = dict()
+        top_dic = dict()
         for ship_id in ships:
             ship_dic = ships[ship_id]
             tier = ship_dic['tier']
-            if (tier < bottom_T) or (upper_T < tier) :
+            if (tier < bottom_T) or (top_T < tier) :
                 pass
             elif ("[" in ship_dic['name']) :
                 pass
-            else :
-                target_ship_dic[ship_id] = ship_dic
+            elif (bottom_T <= tier) and (tier <= top_T) :
+                match_dic[ship_id] = ship_dic
+                if (tier <= T) :
+                    top_dic[ship_id] = ship_dic
+                elif (T <= tier) :
+                    bottom_dic[ship_id] = ship_dic
+
+        target_ship_dic.append(bottom_dic)
+        target_ship_dic.append(match_dic)
+        target_ship_dic.append(top_dic)
         return target_ship_dic
 
-    def get_detect_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_detect_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['concealment']['best_detect_distance_by_ship'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "   "
-            concealment = ship['default_profile']['concealment']
-            best_detect_distance = concealment['best_detect_distance_by_ship']
-            detect_distance = concealment['detect_distance_by_ship']
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(best_detect_distance) + "(" + str(detect_distance) + ")"])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['concealment']['best_detect_distance_by_ship'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "   "
+                concealment = ship['default_profile']['concealment']
+                best_detect_distance = concealment['best_detect_distance_by_ship']
+                detect_distance = concealment['detect_distance_by_ship']
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(best_detect_distance) + "(" + str(detect_distance) + ")"])
+            return_dic.append(data)
+        return return_dic
 
-    def get_HP_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_HP_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['hull']['best_health'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = "   "
-            else :
-                brank = "    "
-            hull = ship['default_profile']['hull']
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(hull['best_health']) + "(" + str(hull['health']) + ")"])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['hull']['best_health'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = "   "
+                else :
+                    brank = "    "
+                hull = ship['default_profile']['hull']
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(hull['best_health']) + "(" + str(hull['health']) + ")"])
+            return_dic.append(data)
+        return return_dic
 
-    def get_fusillade_damage_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_fusillade_damage_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['fusillade_damage'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            artillery = ship['default_profile']['artillery']
-            fusillade_damage = artillery['fusillade_damage']
-            shell_damage = artillery['shell_damage']
-            sum_guns = artillery['sum_guns']
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(fusillade_damage), str(shell_damage), str(sum_guns)])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['artillery']['fusillade_damage'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                artillery = ship['default_profile']['artillery']
+                fusillade_damage = artillery['fusillade_damage']
+                shell_damage = artillery['shell_damage']
+                sum_guns = artillery['sum_guns']
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(fusillade_damage), str(shell_damage), str(sum_guns)])
+            return_dic.append(data)
+        return return_dic
 
-    def get_DPS_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_DPS_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['damage_per_s'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            artillery = ship['default_profile']['artillery']
-            damage_per_s = artillery['damage_per_s']
-            fusillade_damage = artillery['fusillade_damage']
-            shoot_per_s = artillery['shoot_per_s']
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(damage_per_s), str(fusillade_damage), str(shoot_per_s)])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['artillery']['damage_per_s'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                artillery = ship['default_profile']['artillery']
+                damage_per_s = artillery['damage_per_s']
+                fusillade_damage = artillery['fusillade_damage']
+                shoot_per_s = artillery['shoot_per_s']
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(damage_per_s), str(fusillade_damage), str(shoot_per_s)])
+            return_dic.append(data)
+        return return_dic
 
-    def get_fusillade_burn_probability_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_fusillade_burn_probability_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['fusillade_burn_probability'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            artillery = ship['default_profile']['artillery']
-            fusillade_burn_probability = artillery['fusillade_burn_probability']
-            burn_probability = artillery['shell_burn_probability']
-            sum_guns = artillery['sum_guns']
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(fusillade_burn_probability), str(burn_probability), str(sum_guns)])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['artillery']['fusillade_burn_probability'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                artillery = ship['default_profile']['artillery']
+                fusillade_burn_probability = artillery['fusillade_burn_probability']
+                burn_probability = artillery['shell_burn_probability']
+                sum_guns = artillery['sum_guns']
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(fusillade_burn_probability), str(burn_probability), str(sum_guns)])
+            return_dic.append(data)
+        return return_dic
 
-    def get_burn_probability_per_s_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_burn_probability_per_s_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['burn_probability_per_s'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            artillery = ship['default_profile']['artillery']
-            burn_probability_per_s = artillery['burn_probability_per_s']
-            burn_probability = artillery['shell_burn_probability']
-            sum_guns = artillery['sum_guns']
-            shoot_per_s = artillery['shoot_per_s']
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(burn_probability_per_s), str(burn_probability), str(sum_guns), str(shoot_per_s)])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['artillery']['burn_probability_per_s'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                artillery = ship['default_profile']['artillery']
+                burn_probability_per_s = artillery['burn_probability_per_s']
+                burn_probability = artillery['shell_burn_probability']
+                sum_guns = artillery['sum_guns']
+                shoot_per_s = artillery['shoot_per_s']
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(burn_probability_per_s), str(burn_probability), str(sum_guns), str(shoot_per_s)])
+            return_dic.append(data)
+        return return_dic
 
-    def get_bullet_speed_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_bullet_speed_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['shell_bullet_speed'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['artillery']['shell_bullet_speed'])])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['artillery']['shell_bullet_speed'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['artillery']['shell_bullet_speed'])])
+            return_dic.append(data)
+        return return_dic
 
-    def get_artillery_rotation_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_artillery_rotation_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['rotation_time'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['artillery']['rotation_time'])])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['artillery']['rotation_time'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['artillery']['rotation_time'])])
+            return_dic.append(data)
+        return return_dic
 
-    def get_max_speed_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_max_speed_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['mobility']['max_speed'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['mobility']['max_speed'])])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['mobility']['max_speed'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['mobility']['max_speed'])])
+            return_dic.append(data)
+        return return_dic
 
-    def get_rudder_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+    def get_rudder_sort(self, T, T_range) :
+        target_ship_dic = self.get_target_tier_ships(T, T_range)
 
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['mobility']['rudder_time'])
-        data = list()
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            brank = ""
-            if ship['tier'] == 10 :
-                brank = " "
-            else :
-                brank = "  "
-            data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['mobility']['rudder_time'])])
-        return data
+        return_dic = list()
+        for dic in target_ship_dic :
+            # get sorted data
+            sort = sorted(dic.items(), key=lambda x : x[1]['default_profile']['mobility']['rudder_time'])
+            data = list()
+            for sorted_data in sort:
+                ship = sorted_data[1]
+                brank = ""
+                if ship['tier'] == 10 :
+                    brank = " "
+                else :
+                    brank = "  "
+                data.append([ship['name'] + brank + "(" + str(ship['tier']) + ")", str(ship['default_profile']['mobility']['rudder_time'])])
+            return_dic.append(data)
+        return return_dic
