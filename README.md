@@ -19,3 +19,20 @@ if you haven't installed Matplotlib, you have to install it.
 　　　　python3 python3 get_DD_stats.py
 
 Output files created under ./output
+You can get sorted tables and histograms
+![Table image](image/table_all_range.png)
+![Histogram image](image/hist_all_range.png)
+
+## Structure of data/target.json
+Write down pair of Tier and Ship Name.
+If ShipName is filled, the data of the ship will be highlighted. On the other hand, if ShipName is not filled like `[8, ""]`, no data will be highlighted.
+
+~~~
+{
+    "target" : [
+        [**Tier**, "**ShipName**"],
+        [**Tier**, "**ShipName**"],
+        [**Tier**, "**ShipName**"]
+    ]
+}
+~~~
