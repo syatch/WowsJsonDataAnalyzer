@@ -1,6 +1,7 @@
 import json
 from get_sort import *
 from save_output import *
+from data_enum import *
 
 def read_json() :
     with open(data_path) as jsdata:
@@ -64,56 +65,29 @@ def write_json(write_data) :
 
 
 if __name__ == "__main__" :
+    import time
+    start_time = time.process_time()
+
     data_path = 'data/Destroyer.json'
     data = read_json()
     sort_tool = SortTool(data)
     save_tool = SaveTool()
     # check_data(data)
-    Tier = [8, 9]
-    for T in Tier :
-        print("Tier : " + str(T))
+    search = [[8, "HSF 晴風"], [9, "北風"]]
+    for target in search :
+        print("Tier : " + str(target[0]))
         id = ["bottom_range", "all_range", "top_range"]
+        T = target[0]
         T_range = 2
 
-        print(" - detect")
-        data = sort_tool.get_detect_sort(T, T_range)
-        save_tool.save_detect(data, T, id)
-
-        print(" - HP")
-        data = sort_tool.get_HP_sort(T, T_range)
-        save_tool.save_health(data, T, id)
-
-        print(" - fusillade_damage")
-        data = sort_tool.get_fusillade_damage_sort(T, T_range)
-        save_tool.save_fusillade_damage(data, T, id)
-
-        print(" - DPS")
-        data = sort_tool.get_DPS_sort(T, T_range)
-        save_tool.save_DPS(data, T, id)
-
-        print(" - fusillade_burn_probability")
-        data = sort_tool.get_fusillade_burn_probability_sort(T, T_range)
-        save_tool.save_fusillade_burn(data, T, id)
-
-        print(" - burn_probability_per_s")
-        data = sort_tool.get_burn_probability_per_s_sort(T, T_range)
-        save_tool.save_burn_probability(data, T, id)
-
-        print(" - bullet_speed")
-        data = sort_tool.get_bullet_speed_sort(T, T_range)
-        save_tool.save_bullet_speed(data, T, id)
-
-        print(" - artillery_rotation")
-        data = sort_tool.get_artillery_rotation_sort(T, T_range)
-        save_tool.save_rotation(data, T, id)
-
-        print(" - max_speed")
-        data = sort_tool.get_max_speed_sort(T, T_range)
-        save_tool.save_max_speed(data, T, id)
-
-        print(" - rudder")
-        data = sort_tool.get_rudder_sort(T, T_range)
-        save_tool.save_rudder(data, T, id)
-        print(" - end")
+        for data_type in DataType :
+            print(" - " + str(data_type.name))
+            data = sort_tool.get_sort_data[data_type](T, T_range)
+            save_tool.save_table(data, T, id, data_type, target[1])
+            save_tool.save_hist(data, T, id, data_type, target[1])
 
     write_json(sort_tool.get_dic())
+
+    end_time = time.process_time()
+    elapsed_time = end_time - start_time
+    print(elapsed_time)

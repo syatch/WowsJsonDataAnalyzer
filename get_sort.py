@@ -2,32 +2,47 @@ import math
 
 class SortTool:
     # Detect factors
-    camouflage_detect_factor = 0.97
-    commander_detect_factor = 0.9
-    commander_health_factor = 350
-    upgrade_detect_factor = 0.9
+    __camouflage_detect_factor = 0.97
+    __commander_detect_factor = 0.9
+    __commander_health_factor = 350
+    __upgrade_detect_factor = 0.9
 
     # Fire system refered
     # https://wiki.wargaming.net/en/Ship:Fire#Fire_Reisistance
     # Fire Resistance Coefficient (at top hull)
     # FRC = [1.000, 0.9667, 0.9001, 0.8335, 0.7669, 0.7003, 0.6337, 0.5671, 0.5005]
-    FRC = 1.000
+    __FRC = 1.000
     # the effect of the Damage Control System Modification 1 upgrade 5% (0.05) with the upgrade, zero without
-    DCM1 = 0
+    __DCM1 = 0
     # the effect of the Fire Prevention skill: 10% (0.10) with the skill, zero without.
-    FP = 0
+    __FP = 0
     # the Projectile Base Fire Chance (see above).
     # FCB = burn_probability
     # the effect of the IFHE commander skill: 50% (0.5) or one without the skill.
-    IFHE = 1
+    __IFHE = 1
     # the effect of the Pyrotechnician commander skill: 0.01 with the skill, zero without.
-    PY = 0
+    __PY = 0
     # the sum of the effects of the mounted Signals Victor
-    S = 0
+    __S = 0
+
+    __pop_list = ['description', 'price_gold', 'ship_id_str', 'has_demo_profile', 'images', 'is_premium', 'price_credit', 'modules', 'modules_tree', 'upgrades', 'next_ships', 'mod_slots', 'is_special']
+    __profile_pop_list = ['engine', 'torpedo_bomber', 'anti_aircraft', 'atbas', 'fighters', 'fire_control', 'weaponry', 'flight_control', 'armour', ]
 
     def __init__(self, origin_data) :
         self.data = origin_data
-        self.add_data()
+        self.__add_data()
+        self.get_sort_data = [
+            self.__get_detect_sort,
+            self.__get_HP_sort,
+            self.__get_fusillade_damage_sort,
+            self.__get_DPS_sort,
+            self.__get_fusillade_burn_probability_sort,
+            self.__get_burn_probability_per_s_sort,
+            self.__get_bullet_speed_sort,
+            self.__get_artillery_rotation_sort,
+            self.__get_max_speed_sort,
+            self.__get_rudder_sort,
+        ]
 
     def __my_round(self, value, digit = 0) :
         p = 10 ** digit
@@ -36,33 +51,39 @@ class SortTool:
     def get_dic(self) :
         return self.data
 
-    def add_data(self) :
+    def __add_data(self) :
         ships = self.data['data']
         for ship_id in ships:
             ship_dic = ships[ship_id]
 
-                # calculate best ditect distance by ship
+            # delete unused data
+            for pop_key in self.__pop_list :
+                ship_dic.pop(pop_key)
+            for pop_key in self.__profile_pop_list :
+                ship_dic['default_profile'].pop(pop_key)
+
+            ### calculate best ditect distance by ship
             # get default distance
             detect_distance_by_ship = ship_dic['default_profile']['concealment']['detect_distance_by_ship']
             # camouflage and commander
-            best_detect_distance_by_ship = detect_distance_by_ship * self.camouflage_detect_factor * self.commander_detect_factor
+            best_detect_distance_by_ship = detect_distance_by_ship * self.__camouflage_detect_factor * self.__commander_detect_factor
 
             tier = ship_dic['tier']
             if (8 <= tier) : # upgrade
-                best_detect_distance_by_ship = self.__my_round(best_detect_distance_by_ship * self.upgrade_detect_factor, 3)
+                best_detect_distance_by_ship = self.__my_round(best_detect_distance_by_ship * self.__upgrade_detect_factor, 3)
 
             best_detect_distance_by_ship = self.__my_round(best_detect_distance_by_ship, 2)
             # store to dictionary
             ship_dic['default_profile']['concealment']['best_detect_distance_by_ship'] = best_detect_distance_by_ship
 
-                # calculate best health
+            ### calculate best health
             # get default health
             default_health = ship_dic['default_profile']['hull']['health']
-            best_health = default_health + self.commander_health_factor * tier
+            best_health = default_health + self.__commander_health_factor * tier
             # store to dictionary
             ship_dic['default_profile']['hull']['best_health'] = best_health
 
-                # damage and burn
+            ### damage and burn
             artillery = ship_dic["default_profile"]['artillery']
             shells = artillery['shells']
             shell_damage = 0
@@ -74,7 +95,7 @@ class SortTool:
                 shell_damage = HE['damage']
                 shell_speed = HE['bullet_speed']
                 burn_probability = HE['burn_probability']
-                one_hit_fire_chance = self.FRC * (1 - self.DCM1) * (1 - self.FP) * ((burn_probability / 100 * self.IFHE) + self.PY + self.S)
+                one_hit_fire_chance = self.__FRC * (1 - self.__DCM1) * (1 - self.__FP) * ((burn_probability / 100 * self.__IFHE) + self.__PY + self.__S)
             except:
                 try :
                     AP = shells['AP']
@@ -117,7 +138,7 @@ class SortTool:
             no_fire_chance_per_s = (1 - one_hit_fire_chance) ** (shoot_per_s * sum_guns)
             ship_dic['default_profile']['artillery']['burn_probability_per_s'] = self.__my_round((1 - no_fire_chance_per_s) * 100, 2)
 
-    def get_target_tier_ships(self, T, T_range) :
+    def __get_target_tier_ships(self, T, T_range) :
         bottom_T = max(T - T_range, 1)
         top_T = min(T + T_range, 10)
 
@@ -129,6 +150,7 @@ class SortTool:
         top_dic = dict()
         for ship_id in ships:
             ship_dic = ships[ship_id]
+
             tier = ship_dic['tier']
             if (tier < bottom_T) or (top_T < tier) :
                 pass
@@ -138,7 +160,7 @@ class SortTool:
                 match_dic[ship_id] = ship_dic
                 if (tier <= T) :
                     top_dic[ship_id] = ship_dic
-                elif (T <= tier) :
+                if (T <= tier) :
                     bottom_dic[ship_id] = ship_dic
 
         target_ship_dic.append(bottom_dic)
@@ -146,8 +168,8 @@ class SortTool:
         target_ship_dic.append(top_dic)
         return target_ship_dic
 
-    def get_detect_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_detect_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -168,8 +190,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_HP_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_HP_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -188,8 +210,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_fusillade_damage_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_fusillade_damage_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -211,8 +233,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_DPS_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_DPS_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -234,8 +256,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_fusillade_burn_probability_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_fusillade_burn_probability_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -257,8 +279,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_burn_probability_per_s_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_burn_probability_per_s_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -281,8 +303,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_bullet_speed_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_bullet_speed_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -300,8 +322,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_artillery_rotation_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_artillery_rotation_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -319,8 +341,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_max_speed_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_max_speed_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
@@ -338,8 +360,8 @@ class SortTool:
             return_dic.append(data)
         return return_dic
 
-    def get_rudder_sort(self, T, T_range) :
-        target_ship_dic = self.get_target_tier_ships(T, T_range)
+    def __get_rudder_sort(self, T, T_range) :
+        target_ship_dic = self.__get_target_tier_ships(T, T_range)
 
         return_dic = list()
         for dic in target_ship_dic :
