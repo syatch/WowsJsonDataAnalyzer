@@ -33,6 +33,9 @@ class SortTool:
         p = 10 ** digit
         return (value * p * 2 + 1) // 2 / p
 
+    def get_dic(self) :
+        return self.data
+
     def add_data(self) :
         ships = self.data['data']
         for ship_id in ships:
@@ -134,99 +137,128 @@ class SortTool:
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['concealment']['best_detect_distance_by_ship'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            print(str(ship['default_profile']['concealment']['best_detect_distance_by_ship']) + "km  " + str(ship['default_profile']['concealment']['detect_distance_by_ship']) + "km  " + ship['name'] + " - " + str(ship['tier']))
-        return sort
+            concealment = ship['default_profile']['concealment']
+            best_detect_distance = concealment['best_detect_distance_by_ship']
+            detect_distance = concealment['detect_distance_by_ship']
+            data.append([ship['name'], str(best_detect_distance) + "(" + str(detect_distance) + ")"])
+        return data
 
     def get_HP_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['hull']['best_health'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            print(str(ship['default_profile']['hull']['best_health']) + "  " + str(ship['default_profile']['hull']['health']) + "  " + ship['name'] + " - " + str(ship['tier']))
-        return sort
+            hull = ship['default_profile']['hull']
+            data.append([ship['name'], str(hull['best_health']) + "(" + str(hull['health']) + ")"])
+        return data
 
     def get_fusillade_damage_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['fusillade_damage'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            print(str(ship['default_profile']['artillery']['fusillade_damage']) + "  " + str(ship['default_profile']['artillery']['shell_damage']) + "  " + str(ship['default_profile']['artillery']['sum_guns']) + "  " + ship['name'] + " - " + str(ship['tier']))
-        return sort
+            artillery = ship['default_profile']['artillery']
+            fusillade_damage = artillery['fusillade_damage']
+            shell_damage = artillery['shell_damage']
+            sum_guns = artillery['sum_guns']
+            data.append([ship['name'], str(fusillade_damage), str(shell_damage), str(sum_guns)])
+        return data
 
     def get_DPS_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['damage_per_s'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            print(str(ship['default_profile']['artillery']['damage_per_s']) + "  " + str(ship['default_profile']['artillery']['shoot_per_s']) + "  " + str(ship['default_profile']['artillery']['fusillade_damage']) + "  " + ship['name'] + " - " + str(ship['tier']))
-        return sort
+            artillery = ship['default_profile']['artillery']
+            damage_per_s = artillery['damage_per_s']
+            fusillade_damage = artillery['fusillade_damage']
+            shoot_per_s = artillery['shoot_per_s']
+            data.append([ship['name'], str(damage_per_s), str(fusillade_damage), str(shoot_per_s)])
+        return data
 
     def get_fusillade_burn_probability_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['fusillade_burn_probability'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            fusillade_burn_probability = ship['default_profile']['artillery']['fusillade_burn_probability']
-            print(ship['name'] + "  " + str(ship['default_profile']['artillery']['sum_guns']) + "  " + str(ship['default_profile']['artillery']['shell_burn_probability']) + "  " + str(ship['default_profile']['artillery']['fusillade_burn_probability']))
-        return sort
+            artillery = ship['default_profile']['artillery']
+            fusillade_burn_probability = artillery['fusillade_burn_probability']
+            burn_probability = artillery['shell_burn_probability']
+            sum_guns = artillery['sum_guns']
+            data.append([ship['name'], str(fusillade_burn_probability), str(burn_probability), str(sum_guns)])
+        return data
 
     def get_burn_probability_per_s_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['burn_probability_per_s'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            burn_probability_per_s = ship['default_profile']['artillery']['burn_probability_per_s']
-            print(ship['name'] + "  " + str(ship['default_profile']['artillery']['shoot_per_s']) + "  " + str(ship['default_profile']['artillery']['sum_guns']) + "  " + str(ship['default_profile']['artillery']['shell_burn_probability']) + "  " + str(ship['default_profile']['artillery']['burn_probability_per_s']))
-        return sort
+            artillery = ship['default_profile']['artillery']
+            burn_probability_per_s = artillery['burn_probability_per_s']
+            burn_probability = artillery['shell_burn_probability']
+            sum_guns = artillery['sum_guns']
+            shoot_per_s = artillery['shoot_per_s']
+            data.append([ship['name'], str(burn_probability_per_s), str(burn_probability), str(sum_guns), str(shoot_per_s)])
+        return data
 
     def get_bullet_speed_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['shell_bullet_speed'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            print(ship['name'] + "  " + str(ship['default_profile']['artillery']['shell_bullet_speed']))
-        return sort
-
-    def get_max_speed_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
-
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['mobility']['max_speed'])
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            print(ship['name'] + "  " + str(ship['default_profile']['mobility']['max_speed']))
-        return sort
-
-    def get_rudder_sort(self, bottom_T, upper_T) :
-        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
-
-        # get sorted data
-        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['mobility']['rudder_time'])
-        for sorted_data in sort:
-            ship = sorted_data[1]
-            print(ship['name'] + "  " + str(ship['default_profile']['mobility']['rudder_time']))
-        return sort
+            data.append([ship['name'], str(ship['default_profile']['artillery']['shell_bullet_speed'])])
+        return data
 
     def get_artillery_rotation_sort(self, bottom_T, upper_T) :
         target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
 
         # get sorted data
         sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['artillery']['rotation_time'])
+        data = list()
         for sorted_data in sort:
             ship = sorted_data[1]
-            print(ship['name'] + "  " + str(ship['default_profile']['artillery']['rotation_time']))
-        return sort
+            data.append([ship['name'], str(ship['default_profile']['artillery']['rotation_time'])])
+        return data
+
+    def get_max_speed_sort(self, bottom_T, upper_T) :
+        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+
+        # get sorted data
+        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['mobility']['max_speed'])
+        data = list()
+        for sorted_data in sort:
+            ship = sorted_data[1]
+            data.append([ship['name'], str(ship['default_profile']['mobility']['max_speed'])])
+        return data
+
+    def get_rudder_sort(self, bottom_T, upper_T) :
+        target_ship_dic = self.get_target_tier_ships(bottom_T, upper_T)
+
+        # get sorted data
+        sort = sorted(target_ship_dic.items(), key=lambda x : x[1]['default_profile']['mobility']['rudder_time'])
+        data = list()
+        for sorted_data in sort:
+            ship = sorted_data[1]
+            data.append([ship['name'], str(ship['default_profile']['mobility']['rudder_time'])])
+        return data
