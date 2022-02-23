@@ -70,8 +70,8 @@ if __name__ == "__main__" :
     # check_data(data)
     Tier = [9]
     for T in Tier :
-        bottom_T = T - 2
-        top_T = T + 2
+        bottom_T = max(T - 2, 1)
+        top_T = min(T + 2, 10)
 
         # detect_sort = sort_tool.get_detect_sort(bottom_T, top_T)
         # HP_sort = sort_tool.get_HP_sort(bottom_T, top_T)
