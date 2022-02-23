@@ -1,7 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import colorsys
-from data_enum import *
+from base_data import *
 
 class SaveTool:
     def __init__(self) :
@@ -47,6 +47,7 @@ class SaveTool:
 
         # Draw table
         the_table = plt.table(cellText = data,
+                            colColours = (["gainsboro"]) * len(labels),
                             rowColours = colors,
                             colWidths = [0.1] * len(labels),
                             colLabels = labels,
@@ -80,36 +81,52 @@ class SaveTool:
         plt.savefig('output/' + save_path, bbox_inches='tight', pad_inches=0.05)
         plt.close()
 
-    def __get_color_class(self, data) :
+    def __get_hist_class(self, data) :
         (min_row_data, max_row_data) = self.__get_min_max_data(data)
         class_freq = list()
         class_freq.append(min_row_data)
         width = (max_row_data - min_row_data) / 10
         for i in range(1, self.__class_num + 1) :
-            class_freq.append(min_row_data + width * i)
+            class_freq.append(my_round(min_row_data + width * i, 2))
 
         return class_freq
 
     def __save_hist(self, labels, data, save_path, ship_name = "") :
+        matplotlib.rc('font', family = 'Noto Sans CJK JP')
+
         data_value = list()
         for row_data in data :
-            order_data = self.__remove_sub_data(row_data[1])
+            order_data = float(self.__remove_sub_data(row_data[1]))
             data_value.append(order_data)
 
-        class_freq = self.__get_color_class(data)
+        class_freq = self.__get_hist_class(data)
 
-        ret = plt.hist(data_value, bins = class_freq, edgecolor = 'k', fill = False)
-        data = list()
+        n, bins, patches = plt.hist(data_value, bins = class_freq, color = 'deepskyblue', edgecolor = 'k', fill = True)
+
+        data_width = list()
         for i in range(self.__class_num) :
-            data.append([str(class_freq[i]) + " - " + str(class_freq[i + 1]), int(ret[0][i])])
+            data_width.append([str(class_freq[i]) + " - " + str(class_freq[i + 1]), int(n[i])])
 
-        plt.table(cellText = data,
+        plt.table(cellText = data_width,
+                colColours = (["gainsboro"]) * len(labels),
                 colLabels = labels,
-                colWidths=[0.15,0.1],
-                loc='right'
+                colWidths = [0.15,0.1],
+                loc = 'right'
                 )
 
-        plt.savefig('output/' + save_path, bbox_inches = 'tight', pad_inches = 0.05)
+
+        if ship_name :
+            for row_data in data :
+                row_ship_name = self.__remove_sub_data(row_data[0])
+                if ship_name == row_ship_name :
+                    for i in range(len(bins) - 1) :
+                        value = float(self.__remove_sub_data(row_data[1]))
+                        if (bins[i] <= value) and (value < bins[i+1]) :
+                            patches[i].set_facecolor(self.__highlight_color)
+                            break
+                    break
+
+        plt.savefig('output/' + save_path, facecolor="azure", edgecolor="k", bbox_inches = 'tight', pad_inches = 0.05)
         plt.close()
 
     def save_table(self, data, T, id_list, data_type, ship_name = "") :

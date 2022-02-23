@@ -1,7 +1,7 @@
 import json
 from get_sort import *
 from save_output import *
-from data_enum import *
+from base_data import *
 
 def read_json() :
     with open(data_path) as jsdata:

@@ -1,4 +1,5 @@
 import math
+from base_data import *
 
 class SortTool:
     # Detect factors
@@ -44,10 +45,6 @@ class SortTool:
             self.__get_rudder_sort,
         ]
 
-    def __my_round(self, value, digit = 0) :
-        p = 10 ** digit
-        return (value * p * 2 + 1) // 2 / p
-
     def get_dic(self) :
         return self.data
 
@@ -70,9 +67,9 @@ class SortTool:
 
             tier = ship_dic['tier']
             if (8 <= tier) : # upgrade
-                best_detect_distance_by_ship = self.__my_round(best_detect_distance_by_ship * self.__upgrade_detect_factor, 3)
+                best_detect_distance_by_ship = my_round(best_detect_distance_by_ship * self.__upgrade_detect_factor, 3)
 
-            best_detect_distance_by_ship = self.__my_round(best_detect_distance_by_ship, 2)
+            best_detect_distance_by_ship = my_round(best_detect_distance_by_ship, 2)
             # store to dictionary
             ship_dic['default_profile']['concealment']['best_detect_distance_by_ship'] = best_detect_distance_by_ship
 
@@ -125,18 +122,18 @@ class SortTool:
             shoot_per_s = 1 / artillery['shot_delay']
             if (9 <= tier) : # upgrade
                 shoot_per_s *= 1 / 0.88
-            ship_dic['default_profile']['artillery']['shoot_per_s'] = self.__my_round(shoot_per_s, 3)
+            ship_dic['default_profile']['artillery']['shoot_per_s'] = my_round(shoot_per_s, 3)
 
             damage_per_s = fusillade_damage * shoot_per_s
-            ship_dic['default_profile']['artillery']['damage_per_s'] = self.__my_round(damage_per_s, 2)
+            ship_dic['default_profile']['artillery']['damage_per_s'] = my_round(damage_per_s, 2)
 
             ship_dic['default_profile']['artillery']['shell_burn_probability'] = burn_probability
 
             fusillade_no_fire_chance = (1 - one_hit_fire_chance) ** sum_guns
-            ship_dic['default_profile']['artillery']['fusillade_burn_probability'] = self.__my_round((1 - fusillade_no_fire_chance) * 100, 2)
+            ship_dic['default_profile']['artillery']['fusillade_burn_probability'] = my_round((1 - fusillade_no_fire_chance) * 100, 2)
 
             no_fire_chance_per_s = (1 - one_hit_fire_chance) ** (shoot_per_s * sum_guns)
-            ship_dic['default_profile']['artillery']['burn_probability_per_s'] = self.__my_round((1 - no_fire_chance_per_s) * 100, 2)
+            ship_dic['default_profile']['artillery']['burn_probability_per_s'] = my_round((1 - no_fire_chance_per_s) * 100, 2)
 
     def __get_target_tier_ships(self, T, T_range) :
         bottom_T = max(T - T_range, 1)

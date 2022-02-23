@@ -53,3 +53,7 @@ class SaveDirectory :
         '/max_speed/',
         '/rudder/',
     ]
+
+def my_round(value, digit = 0) :
+    p = 10 ** digit
+    return (value * p * 2 + 1) // 2 / p
