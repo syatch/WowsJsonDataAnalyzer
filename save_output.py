@@ -139,7 +139,11 @@ class SaveTool:
         index = 0
         for id in id_list :
             labels = TableLabel.labels[data_type]
-            save_path = str(T) + SaveDirectory.directory[data_type] + 'table_' + str(id)
+            if ship_name :
+                ship_type = "/" + ship_name
+            else :
+                ship_type = "/none"
+            save_path = str(T) + ship_type + SaveDirectory.directory[data_type] + 'table_' + str(id)
             self.__save_table(labels, data[index], save_path, ship_name)
             index += 1
 
@@ -147,6 +151,10 @@ class SaveTool:
         index = 0
         for id in id_list :
             labels = HistLabel.labels[data_type]
-            save_path = str(T) + SaveDirectory.directory[data_type] + 'hist_' + str(id)
+            if ship_name :
+                ship_type = "/" + ship_name
+            else :
+                ship_type = "/none"
+            save_path = str(T) + ship_type + SaveDirectory.directory[data_type] + 'hist_' + str(id)
             self.__save_hist(labels, data[index], save_path, ship_name)
             index += 1

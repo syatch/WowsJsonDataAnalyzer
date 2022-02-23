@@ -76,18 +76,17 @@ if __name__ == "__main__" :
     save_tool = SaveTool()
     # check_data(data)
     search = read_json(target_path)
-    # search = [[8, "HSF 晴風"], [9, "北風"]]
-    for target in search :
-        print("Tier : " + target)
+    for target in search['target'] :
+        print("Tier : " + str(target[0]) + "  Ship : " + target[1])
         id = ["bottom_range", "all_range", "top_range"]
-        T = int(target)
+        T = target[0]
         T_range = 2
 
         for data_type in DataType :
             print(" - " + str(data_type.name))
             data = sort_tool.get_sort_data[data_type](T, T_range)
-            save_tool.save_table(data, T, id, data_type, search[target])
-            save_tool.save_hist(data, T, id, data_type, search[target])
+            save_tool.save_table(data, T, id, data_type, target[1])
+            save_tool.save_hist(data, T, id, data_type, target[1])
 
     write_json(sort_tool.get_dic())
 
