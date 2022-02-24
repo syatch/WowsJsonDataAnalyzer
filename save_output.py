@@ -6,14 +6,17 @@ from statistics import mean
 from base_data import *
 
 class SaveTool:
+    __h_start = 0.3
+    __h_length = 0.4
+    __s = 0.9
+    __v = 1.0
+    __class_num = 10
+    __highlight__fill_h = 0.155
+    __highlight__border_h = 0.1
+    __table_dpi = 80
+    __hist_dpi = 80
+
     def __init__(self) :
-        self.__h_start = 0.3
-        self.__h_length = 0.4
-        self.__s = 0.9
-        self.__v = 1.0
-        self.__class_num = 10
-        self.__highlight__fill_h = 0.155
-        self.__highlight__border_h = 0.1
         self.__highlight_color = colorsys.hsv_to_rgb(self.__highlight__fill_h, self.__s, self.__v)
         self.__highlight_border = colorsys.hsv_to_rgb(self.__highlight__border_h, self.__s, self.__v)
 
@@ -80,7 +83,7 @@ class SaveTool:
         for pos in ['right','top','bottom','left']:
             plt.gca().spines[pos].set_visible(False)
 
-        plt.savefig(save_path, bbox_inches='tight', pad_inches=0.05)
+        plt.savefig(save_path + '.png', bbox_inches='tight', pad_inches = 0.05, dpi = self.__table_dpi)
         plt.close()
 
     def __get_hist_class(self, data) :
@@ -133,7 +136,7 @@ class SaveTool:
                             break
                     break
 
-        plt.savefig(save_path, facecolor="azure", edgecolor="k", bbox_inches = 'tight', pad_inches = 0.05)
+        plt.savefig(save_path + '.png', facecolor="azure", edgecolor="k", bbox_inches = 'tight', pad_inches = 0.05, dpi = self.__hist_dpi)
         plt.close()
 
     def save_table(self, data, T, id_list, data_type, ship_name = "") :
