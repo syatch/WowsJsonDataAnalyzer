@@ -95,14 +95,14 @@ class SortTool:
                 one_hit_fire_chance = self.__FRC * (1 - self.__DCM1) * (1 - self.__FP) * ((burn_probability / 100 * self.__IFHE) + self.__PY + self.__S)
             except:
                 try :
-                    AP = shells['AP']
-                    shell_damage = AP['damage']
-                    shell_speed = AP['bullet_speed']
+                    SAP = shells['SAP']
+                    shell_damage = SAP['damage']
+                    shell_speed = SAP['bullet_speed']
                 except:
                     try :
-                        SAP = shells['SAP']
-                        shell_damage = SAP['damage']
-                        shell_speed = SAP['bullet_speed']
+                        AP = shells['AP']
+                        shell_damage = AP['damage']
+                        shell_speed = AP['bullet_speed']
                     except:
                         pass
             ship_dic['default_profile']['artillery']['shell_damage'] = shell_damage

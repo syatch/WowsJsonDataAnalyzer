@@ -13,8 +13,8 @@ class SaveTool:
     __class_num = 10
     __highlight__fill_h = 0.155
     __highlight__border_h = 0.1
-    __table_dpi = 80
-    __hist_dpi = 80
+    __table_dpi = 100
+    __hist_dpi = 100
 
     def __init__(self) :
         self.__highlight_color = colorsys.hsv_to_rgb(self.__highlight__fill_h, self.__s, self.__v)
@@ -22,7 +22,10 @@ class SaveTool:
 
     def __remove_sub_data(self, data) :
         delete_num  = data.find(")") - data.find("(") + 1
-        return data[0:-delete_num].rstrip()
+        if delete_num != 1 :
+            return data[0:-delete_num].rstrip()
+
+        return data.rstrip()
 
     def __get_min_max_data(self, data) :
         min_row_data = data[0][1]
@@ -90,7 +93,7 @@ class SaveTool:
         (min_row_data, max_row_data) = self.__get_min_max_data(data)
         class_freq = list()
         class_freq.append(min_row_data)
-        width = (max_row_data - min_row_data) / 10
+        width = (max_row_data - min_row_data) / self.__class_num
         for i in range(1, self.__class_num + 1) :
             class_freq.append(my_round(min_row_data + width * i, 2))
 
@@ -131,7 +134,7 @@ class SaveTool:
                 if ship_name == row_ship_name :
                     for i in range(len(bins) - 1) :
                         value = float(self.__remove_sub_data(row_data[1]))
-                        if (bins[i] <= value) and (value < bins[i+1]) :
+                        if (bins[i] <= value) and (value <= bins[i+1]) :
                             patches[i].set_facecolor(self.__highlight_color)
                             break
                     break
